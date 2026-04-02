@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academic Performance System</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        body::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -5%;
+            width: 400px;
+            height: 400px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            animation: float 8s ease-in-out infinite reverse;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(30px); }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 550px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 50px 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header-icon {
+            font-size: 50px;
+            margin-bottom: 15px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        h2 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .divider {
+            height: 3px;
+            width: 60px;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            margin: 15px auto;
+            border-radius: 2px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            animation: slideIn 0.6s ease-out forwards;
+            opacity: 0;
+        }
+
+        .form-group:nth-child(1) { animation-delay: 0.1s; }
+        .form-group:nth-child(2) { animation-delay: 0.2s; }
+        .form-group:nth-child(3) { animation-delay: 0.3s; }
+        .form-group:nth-child(4) { animation-delay: 0.4s; }
+        .form-group:nth-child(5) { animation-delay: 0.5s; }
+        .form-group:nth-child(6) { animation-delay: 0.6s; }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        label {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            color: #333;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        label i {
+            margin-right: 8px;
+            color: #667eea;
+            font-size: 16px;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .file-input-label {
+            display: block;
+            padding: 15px;
+            border: 2px dashed #667eea;
+            border-radius: 10px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            color: #667eea;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .file-input-label:hover {
+            border-color: #764ba2;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            transform: translateY(-2px);
+        }
+
+        .file-input-label.active {
+            border-color: #28a745;
+            background: linear-gradient(135deg, rgba(40, 167, 69, 0.1) 0%, rgba(40, 167, 69, 0.05) 100%);
+            color: #28a745;
+        }
+
+        .file-name {
+            display: none;
+            color: #28a745;
+            font-size: 12px;
+            margin-top: 5px;
+            font-weight: 600;
+        }
+
+        .file-name.show {
+            display: block;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        button:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active:not(:disabled) {
+            transform: translateY(-1px);
+        }
+
+        button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        button i {
+            font-size: 18px;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 25px;
+            padding: 20px;
+            background: #e8f5e9;
+            border-radius: 10px;
+            border-left: 4px solid #28a745;
+        }
+
+        .loading.show {
+            display: block;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: #2e7d32;
+            font-weight: 600;
+            font-size: 16px;
+            margin: 0;
+        }
+
+        .loading-subtext {
+            color: #558b2f;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+
+        .message {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        .message.show {
+            display: block;
+        }
+
+        .message.success {
+            background: #e8f5e9;
+            border-left-color: #28a745;
+            color: #2e7d32;
+        }
+
+        .message.error {
+            background: #ffebee;
+            border-left-color: #dc3545;
+            color: #c62828;
+        }
+
+        .message i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, rgba(33, 150, 243, 0.1) 0%, rgba(3, 155, 229, 0.05) 100%);
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin-bottom: 25px;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #0d47a1;
+            display: flex;
+            gap: 10px;
+        }
+
+        .info-box i {
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+
+        .progress-bar {
+            display: none;
+            height: 4px;
+            background: #f0f0f0;
+            border-radius: 2px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar.show {
+            display: block;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 2px;
+            animation: progress 2s ease-in-out infinite;
+        }
+
+        @keyframes progress {
+            0% { width: 0%; }
+            50% { width: 100%; }
+            100% { width: 100%; }
+        }
+
+        @media (max-width: 600px) {
+            .card {
+                padding: 30px 25px;
+            }
+
+            h2 {
+                font-size: 24px;
+            }
+
+            button {
+                padding: 12px;
+                font-size: 14px;
+            }
+
+            .header-icon {
+                font-size: 40px;
+            }
+        }
+
+        .success-icon {
+            font-size: 50px;
+            color: #28a745;
+            margin-bottom: 15px;
+            animation: scaleIn 0.5s ease-out;
+        }
+
+        @keyframes scaleIn {
+            from { transform: scale(0); }
+            to { transform: scale(1); }
+        }
+
+        form.submitted button {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="card">
+        <div class="header">
+            <div class="header-icon">📊</div>
+            <h2>Academic Performance System</h2>
+            <p class="subtitle">Upload CSV Files to Process Student Data</p>
+            <div class="divider"></div>
+        </div>
+
+        <div class="info-box">
+            <i class="fas fa-circle-info"></i>
+            <span><strong>Required Files:</strong> students.csv, attendance.csv, homework.csv, performance.csv, subject_teacher.csv</span>
+        </div>
+
+        <form action="/upload" method="post" enctype="multipart/form-data" id="uploadForm">
+            
+            <div class="form-group">
+                <label for="students">
+                    <i class="fas fa-users"></i> Students Data
+                </label>
+                <div class="file-input-wrapper">
+                    <input type="file" id="students" name="files" accept=".csv" required>
+                    <label for="students" class="file-input-label">
+                        <i class="fas fa-cloud-arrow-up"></i>
+                        Click to upload or drag & drop (students.csv)
+                    </label>
+                    <div class="file-name"></div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="attendance">
+                    <i class="fas fa-calendar-check"></i> Attendance Data
+                </label>
+                <div class="file-input-wrapper">
+                    <input type="file" id="attendance" name="files" accept=".csv" required>
+                    <label for="attendance" class="file-input-label">
+                        <i class="fas fa-cloud-arrow-up"></i>
+                        Click to upload or drag & drop (attendance.csv)
+                    </label>
+                    <div class="file-name"></div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="homework">
+                    <i class="fas fa-book"></i> Homework Data
+                </label>
+                <div class="file-input-wrapper">
+                    <input type="file" id="homework" name="files" accept=".csv" required>
+                    <label for="homework" class="file-input-label">
+                        <i class="fas fa-cloud-arrow-up"></i>
+                        Click to upload or drag & drop (homework.csv)
+                    </label>
+                    <div class="file-name"></div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="performance">
+                    <i class="fas fa-chart-line"></i> Performance Data
+                </label>
+                <div class="file-input-wrapper">
+                    <input type="file" id="performance" name="files" accept=".csv" required>
+                    <label for="performance" class="file-input-label">
+                        <i class="fas fa-cloud-arrow-up"></i>
+                        Click to upload or drag & drop (performance.csv)
+                    </label>
+                    <div class="file-name"></div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="teacher">
+                    <i class="fas fa-chalkboard-user"></i> Subject-Teacher Data
+                </label>
+                <div class="file-input-wrapper">
+                    <input type="file" id="teacher" name="files" accept=".csv" required>
+                    <label for="teacher" class="file-input-label">
+                        <i class="fas fa-cloud-arrow-up"></i>
+                        Click to upload or drag & drop (subject_teacher.csv)
+                    </label>
+                    <div class="file-name"></div>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button type="submit" id="submitBtn">
+                    <i class="fas fa-rocket"></i> Process Data & Send Alerts
+                </button>
+                <button type="reset" style="background: #999; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);">
+                    <i class="fas fa-redo"></i> Clear Files
+                </button>
+            </div>
+
+            <div class="progress-bar" id="progressBar">
+                <div class="progress-fill"></div>
+            </div>
+        </form>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p class="loading-text">⏳ Processing Your Data</p>
+            <p class="loading-subtext">This may take a few moments... Emails are being sent</p>
+        </div>
+
+        <div class="message" id="message"></div>
+    </div>
+</div>
+
+<script>
+    const fileInputs = document.querySelectorAll('input[type="file"]');
+    const uploadForm = document.getElementById('uploadForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const loading = document.getElementById('loading');
+    const messageDiv = document.getElementById('message');
+    const progressBar = document.getElementById('progressBar');
+
+    // File input handlers
+    fileInputs.forEach(input => {
+        const label = input.nextElementSibling;
+        const fileName = label.nextElementSibling;
+
+        // Drag and drop
+        label.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            label.classList.add('active');
+        });
+
+        label.addEventListener('dragleave', () => {
+            label.classList.remove('active');
+        });
+
+        label.addEventListener('drop', (e) => {
+            e.preventDefault();
+            label.classList.remove('active');
+            input.files = e.dataTransfer.files;
+            updateFileName(input, fileName);
+        });
+
+        // Click to select
+        label.addEventListener('click', (e) => {
+            input.click();
+        });
+
+        // File selection
+        input.addEventListener('change', () => {
+            updateFileName(input, fileName);
+        });
+    });
+
+    function updateFileName(input, fileNameElement) {
+        if (input.files.length > 0) {
+            fileNameElement.textContent = `✓ ${input.files[0].name}`;
+            fileNameElement.classList.add('show');
+        }
+    }
+
+    // Form submission
+    uploadForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        // Check all files are selected
+        const allFilesSelected = Array.from(fileInputs).every(input => input.files.length > 0);
+        if (!allFilesSelected) {
+            showMessage('Please select all required files', 'error');
+            return;
+        }
+
+        const formData = new FormData();
+        fileInputs.forEach(input => {
+            Array.from(input.files).forEach(file => {
+                formData.append('files', file);
+            });
+        });
+
+        // Show loading
+        submitBtn.disabled = true;
+        loading.classList.add('show');
+        progressBar.classList.add('show');
+        messageDiv.style.display = 'none';
+
+        try {
+            const response = await fetch('/upload', {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                showMessage(
+                    `<i class="fas fa-check-circle"></i> ${data.message}`,
+                    'success'
+                );
+                uploadForm.classList.add('submitted');
+                setTimeout(() => {
+                    uploadForm.reset();
+                    uploadForm.classList.remove('submitted');
+                    fileInputs.forEach(input => {
+                        const label = input.nextElementSibling;
+                        const fileName = label.nextElementSibling;
+                        fileName.classList.remove('show');
+                    });
+                }, 2000);
+            } else {
+                showMessage(
+                    `<i class="fas fa-exclamation-circle"></i> Error: ${data.detail || 'Unknown error'}`,
+                    'error'
+                );
+            }
+        } catch (error) {
+            showMessage(
+                `<i class="fas fa-exclamation-circle"></i> Upload failed: ${error.message}`,
+                'error'
+            );
+        } finally {
+            submitBtn.disabled = false;
+            loading.classList.remove('show');
+            progressBar.classList.remove('show');
+        }
+    });
+
+    function showMessage(text, type) {
+        messageDiv.innerHTML = text;
+        messageDiv.className = `message ${type} show`;
+    }
+</script>
+
+</body>
+</html>
